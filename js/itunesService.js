@@ -9,34 +9,30 @@ angular.module('itunes')
   //You can return the http request or you can make your own promise in order to manipulate the data before you resolve it.
 
     //Code here
-    this.getSongData = function(artist) {
+    this.getSongData = function(search) {
+      if (search){
       var dfd = $q.defer();
-        $http.jsonp('https://itunes.apple.com/search?term=' + artist + '&callback=JSON_CALLBACK')
+        $http.jsonp('https://itunes.apple.com/search?term=' + search + '&callback=JSON_CALLBACK')
         .then(function(response){
+            console.log(response);
           var songInfo = response.data.results;
-          // var Info = function() {
-          // this.AlbumArt= songInfo.artworkUrl30;
-          // this.Artist= songInfo.artistName;
-          // this.Collection = songInfo.collectionName;
-          // this.CollectionPrice = songInfo.collectionPrice;
-          // this.Play = songInfo.previewUrl;
-          // this.Type = songInfo.kind;
-          // }
           var array = [];
           for (var i=0; i < songInfo.length; i++ ) {
             var obj = {
               Play: songInfo[i].previewUrl,
               Artist: songInfo[i].artistName,
               Collection: songInfo[i].collectionName,
-              AlbumArt: songInfo[i].artworkUrl30,
+              AlbumArt: songInfo[i].artworkUrl100,
               Type: songInfo[i].kind,
-              CollectionPrice: songInfo[i].collectionPrice
+              CollectionPrice: songInfo[i].collectionPrice,
+              SinglePrice: songInfo[i].trackPrice
             }
             array.push(obj);
-          } 
+          }
           dfd.resolve(array);
         })
         return dfd.promise;
+      }
 
     };
 
